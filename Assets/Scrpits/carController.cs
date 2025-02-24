@@ -22,18 +22,28 @@ public class carController : MonoBehaviour
     private Rigidbody rb;
     private bool jumpRequest = false;
 
+    [SerializeField] private float maxTiltAngle = 45f; // Ángulo máximo de inclinación permitido
 
     private void FixedUpdate() {
         GetInput();
         HandleMotor();
         HandleSteering();
         UpdateWheels();
+
+        // Verificar la inclinación y aplicar corrección si es necesario
+        CheckAndCorrectTilt();
+
+        
         if (jumpRequest)
         {
             rb.AddForce(Vector3.up * 10000, ForceMode.Impulse);
             jumpRequest = false;
         }
+        if (vertical>0.75){
+            vertical=0;
+        }
     }
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -95,11 +105,28 @@ public class carController : MonoBehaviour
         wheelTransform.rotation = rot;
         wheelTransform.position = pos;
     }
+
     private bool IsCarGrounded()
     {
         return frontLeftWheelCollider.isGrounded ||
         frontRightWheelCollider.isGrounded ||
         rearLeftWheelCollider.isGrounded ||
         rearRightWheelCollider.isGrounded;
+    }
+
+    // Nueva función para comprobar la inclinación y corregirla si es necesario
+    private void CheckAndCorrectTilt()
+    {
+        // Obtener la rotación del coche en los ejes X y Z
+        Vector3 carRotation = transform.rotation.eulerAngles;
+
+        // Comprobar si el coche está inclinado en el eje X o Z
+        if (Mathf.Abs(carRotation.x) > maxTiltAngle || Mathf.Abs(carRotation.z) > maxTiltAngle)
+        {
+            // Si el coche está inclinado más de lo permitido, corregirlo
+            Vector3 correction = new Vector3(0f, transform.rotation.eulerAngles.y, 0f);
+            Quaternion targetRotation = Quaternion.Euler(correction);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 5f); // Aplicar corrección suave
+        }
     }
 }
