@@ -33,15 +33,16 @@ public class carController : MonoBehaviour
         // Verificar la inclinación y aplicar corrección si es necesario
         CheckAndCorrectTilt();
 
-        
+        if (!IsCarGrounded()) 
+    {
+        rb.angularVelocity = new Vector3(0, rb.angularVelocity.y, 0);
+    }
         if (jumpRequest)
         {
             rb.AddForce(Vector3.up * 10000, ForceMode.Impulse);
             jumpRequest = false;
         }
-        if (vertical>0.75){
-            vertical=0;
-        }
+       
     }
 
     private void Start()
