@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
+  - Obstcales
+  - Obstacle
+  - Boosts
+  - Meta
   layers:
   - Default
   - TransparentFX
