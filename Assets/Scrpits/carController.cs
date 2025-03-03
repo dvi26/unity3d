@@ -2,24 +2,21 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class carController : MonoBehaviour
+public class CarController : MonoBehaviour
 {
     private float horizontal, vertical;
     private float anguloGiro, fuerzaFreno;
     private bool estaFrenando;
 
-    // Configuración de manejo
     [SerializeField] private float fuerzaMotor = 1500f;
     [SerializeField] private float breakForce = 3000f;
     [SerializeField] private float anguloGiroMax = 30f;
     [SerializeField] private float estabilidad = 0.3f;
     [SerializeField] private float traccionAdherencia = 1f;
     
-    // Wheel Colliders
     [SerializeField] private WheelCollider frontLeftWheelCollider, frontRightWheelCollider;
     [SerializeField] private WheelCollider rearLeftWheelCollider, rearRightWheelCollider;
-
-    // Transforms de las ruedas
+    
     [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform;
     [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
 
@@ -31,12 +28,12 @@ public class carController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         audioData = GetComponent<AudioSource>();
-        AdjustWheelFriction();
+        AjustarFriccionRuedas();
     }
 
     private void Update()
     {
-        GetInput();
+        ObtenerInput();
         if (puntuacion < 0)
         {
             SceneManager.LoadScene("GameOver");
@@ -45,31 +42,31 @@ public class carController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleMotor();
-        HandleSteering();
-        UpdateWheels();
-        ApplyStabilization();
-        CheckAndCorrectTilt();
+        ManejarMotor();
+        ManejarDireccion();
+        ActualizarRuedas();
+        AplicarEstabilizacion();
+        CorregirInclinacion();
     }
 
-    private void GetInput()
+    private void ObtenerInput()
     {
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
         estaFrenando = Input.GetKey(KeyCode.Space);
     }
 
-    private void HandleMotor()
+    private void ManejarMotor()
     {
         float torque = Mathf.Lerp(0, fuerzaMotor * vertical, Time.deltaTime * 5f);
         rearLeftWheelCollider.motorTorque = torque;
         rearRightWheelCollider.motorTorque = torque;
-
+        
         fuerzaFreno = estaFrenando ? breakForce : 0f;
-        ApplyBreaking();
+        AplicarFrenado();
     }
 
-    private void ApplyBreaking()
+    private void AplicarFrenado()
     {
         frontRightWheelCollider.brakeTorque = fuerzaFreno;
         frontLeftWheelCollider.brakeTorque = fuerzaFreno;
@@ -77,22 +74,22 @@ public class carController : MonoBehaviour
         rearRightWheelCollider.brakeTorque = fuerzaFreno;
     }
 
-    private void HandleSteering()
+    private void ManejarDireccion()
     {
         anguloGiro = Mathf.Lerp(anguloGiro, anguloGiroMax * horizontal, Time.deltaTime * 10f);
         frontLeftWheelCollider.steerAngle = anguloGiro;
         frontRightWheelCollider.steerAngle = anguloGiro;
     }
 
-    private void UpdateWheels()
+    private void ActualizarRuedas()
     {
-        UpdateSingleWheel(frontLeftWheelCollider, frontLeftWheelTransform);
-        UpdateSingleWheel(frontRightWheelCollider, frontRightWheelTransform);
-        UpdateSingleWheel(rearRightWheelCollider, rearRightWheelTransform);
-        UpdateSingleWheel(rearLeftWheelCollider, rearLeftWheelTransform);
+        ActualizarRueda(frontLeftWheelCollider, frontLeftWheelTransform);
+        ActualizarRueda(frontRightWheelCollider, frontRightWheelTransform);
+        ActualizarRueda(rearRightWheelCollider, rearRightWheelTransform);
+        ActualizarRueda(rearLeftWheelCollider, rearLeftWheelTransform);
     }
 
-    private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
+    private void ActualizarRueda(WheelCollider wheelCollider, Transform wheelTransform)
     {
         Vector3 pos;
         Quaternion rot;
@@ -101,33 +98,34 @@ public class carController : MonoBehaviour
         wheelTransform.position = pos;
     }
 
-    private void ApplyStabilization()
+    private void AplicarEstabilizacion()
     {
-        Vector3 localVelocity = transform.InverseTransformDirection(rb.linearVelocity);
-
-        // Aplicar fuerza de estabilidad
-        rb.AddForce(-transform.right * localVelocity.x * estabilidad, ForceMode.Acceleration);
-
-        // Ajustar adherencia en curvas
-        if (Mathf.Abs(localVelocity.x) > 1f)
+        Vector3 velocidadLocal = transform.InverseTransformDirection(rb.linearVelocity);
+        rb.AddForce(-transform.right * velocidadLocal.x * estabilidad, ForceMode.Acceleration);
+        if (Mathf.Abs(velocidadLocal.x) > 1f)
         {
-            rb.AddForce(-transform.right * localVelocity.x * traccionAdherencia, ForceMode.Acceleration);
+            rb.AddForce(-transform.right * velocidadLocal.x * traccionAdherencia, ForceMode.Acceleration);
         }
     }
 
-    private void AdjustWheelFriction()
+    private void AjustarFriccionRuedas()
     {
-        WheelFrictionCurve friction = rearLeftWheelCollider.sidewaysFriction;
-        friction.stiffness = 2.5f;
-        rearLeftWheelCollider.sidewaysFriction = friction;
-        rearRightWheelCollider.sidewaysFriction = friction;
+        WheelFrictionCurve friccion = rearLeftWheelCollider.sidewaysFriction;
+        friccion.stiffness = 2.5f;
+        rearLeftWheelCollider.sidewaysFriction = friccion;
+        rearRightWheelCollider.sidewaysFriction = friccion;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Boosts"))
         {
-            StartCoroutine(BoostSpeed(other.gameObject));
+            StartCoroutine(AumentarVelocidad(other.gameObject, 0f));
+            audioData.Play();
+        }
+        if (other.CompareTag("HyperBoost"))
+        {
+            StartCoroutine(AumentarVelocidad(other.gameObject, 50000f));
             audioData.Play();
         }
         if (other.CompareTag("Obstacle"))
@@ -138,40 +136,51 @@ public class carController : MonoBehaviour
         {
             SceneManager.LoadScene("Fase2");
         }
+        SaltoBoost();
     }
 
-    private IEnumerator RestarPuntuacion(GameObject obstacle)
+    private bool EstaEnSuelo()
     {
-        obstacle.SetActive(false);
+        return Physics.Raycast(transform.position, -transform.up, 1.5f);
+    }
+
+    private void SaltoBoost()
+    {
+        if (EstaEnSuelo())
+        {
+            rb.AddForce(transform.up * 1000f + transform.forward * 500f, ForceMode.Impulse);
+        }
+    }
+
+    private IEnumerator RestarPuntuacion(GameObject obstaculo)
+    {
+        obstaculo.SetActive(false);
         yield return new WaitForSeconds(5f);
         puntuacion -= 500;
-        obstacle.SetActive(true);
+        obstaculo.SetActive(true);
     }
 
-    private IEnumerator BoostSpeed(GameObject boostObject)
+    private IEnumerator AumentarVelocidad(GameObject boostObjeto, float fuerzaExtra)
     {
-        float boostForce = 9000f;
-        float boostDuration = 2f;
-        float respawnTime = 5f;
-
-        rb.AddForce(transform.forward * boostForce, ForceMode.Impulse);
-
-        boostObject.SetActive(false);
-        yield return new WaitForSeconds(respawnTime);
-        boostObject.SetActive(true);
+        float fuerzaBoost = 9000f + fuerzaExtra;
+        float tiempoBoost = 2f;
+        float tiempoRespawn = 5f;
+        
+        rb.AddForce(transform.forward * fuerzaBoost, ForceMode.Impulse);
+        
+        boostObjeto.SetActive(false);
+        yield return new WaitForSeconds(tiempoRespawn);
+        boostObjeto.SetActive(true);
     }
-    private void CheckAndCorrectTilt()
-    {
-        // Obtener la rotación del coche en los ejes X y Z
-        Vector3 carRotation = transform.rotation.eulerAngles;
 
-        // Comprobar si el coche está inclinado en el eje X o Z
-        if (Mathf.Abs(carRotation.x) > anguloGiroMax || Mathf.Abs(carRotation.z) > anguloGiroMax)
+    private void CorregirInclinacion()
+    {
+        Vector3 rotacionCoche = transform.rotation.eulerAngles;
+        if (Mathf.Abs(rotacionCoche.x) > anguloGiroMax || Mathf.Abs(rotacionCoche.z) > anguloGiroMax)
         {
-            // Si el coche está inclinado más de lo permitido, corregirlo
-            Vector3 correction = new Vector3(0f, transform.rotation.eulerAngles.y, 0f);
-            Quaternion targetRotation = Quaternion.Euler(correction);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 5f); // Aplicar corrección suave
+            Vector3 correccion = new Vector3(0f, transform.rotation.eulerAngles.y, 0f);
+            Quaternion rotacionObjetivo = Quaternion.Euler(correccion);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rotacionObjetivo, Time.deltaTime * 5f);
         }
     }
 }
