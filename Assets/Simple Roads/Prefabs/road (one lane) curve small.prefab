@@ -118,6 +118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4277171965964562617}
+  - component: {fileID: 5513777891309186811}
   m_Layer: 0
   m_Name: road (one lane) curve small
   m_TagString: Ground
@@ -145,6 +146,18 @@ Transform:
   - {fileID: 5556476150465914012}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5513777891309186811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3463340205550070275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78a52146f7d66574788ba48989502761, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4796728899965658746
 GameObject:
   m_ObjectHideFlags: 0

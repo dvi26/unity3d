@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8782257723121795534}
+  - component: {fileID: 6121156470468091622}
   m_Layer: 0
   m_Name: elevated road branch
   m_TagString: Ground
@@ -33,6 +34,18 @@ Transform:
   - {fileID: 9109200549832014862}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6121156470468091622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8782257723121795536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78a52146f7d66574788ba48989502761, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8782257721520391342
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -108,6 +121,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 83972121a82131c4d817116c3fa6e564, type: 3}
       propertyPath: m_Name
       value: Inner
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 83972121a82131c4d817116c3fa6e564, type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     - target: {fileID: 1378922297957006227, guid: 83972121a82131c4d817116c3fa6e564, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -222,6 +239,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 980d4e9904257f1438ad6c35251705ae, type: 3}
       propertyPath: m_Name
       value: Outer
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 980d4e9904257f1438ad6c35251705ae, type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     - target: {fileID: 1378922297957006227, guid: 980d4e9904257f1438ad6c35251705ae, type: 3}
       propertyPath: m_StaticEditorFlags

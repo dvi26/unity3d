@@ -118,6 +118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2593659137380005704}
+  - component: {fileID: 6991485025764085331}
   m_Layer: 0
   m_Name: road (one lane) intesection
   m_TagString: Ground
@@ -147,6 +148,18 @@ Transform:
   - {fileID: 2152556846329481556}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6991485025764085331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2933347020188642802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78a52146f7d66574788ba48989502761, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3987608462922214192
 GameObject:
   m_ObjectHideFlags: 0

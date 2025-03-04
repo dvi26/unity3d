@@ -119,6 +119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1239770465092349085}
   - component: {fileID: -115013803742361877}
+  - component: {fileID: -1611762479657841893}
   m_Layer: 0
   m_Name: road square
   m_TagString: Ground
@@ -165,6 +166,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &-1611762479657841893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909345955458184743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78a52146f7d66574788ba48989502761, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7858663914026263991
 GameObject:
   m_ObjectHideFlags: 0
